@@ -27,7 +27,7 @@ const Home = () => {
     }
   };
   const Logon = () => {
-    console.log(res.data);
+    console.log(users);
     setUser(
       users.find(
         (element) => element.login === login && element.password === password

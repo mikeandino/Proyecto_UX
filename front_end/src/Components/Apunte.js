@@ -18,7 +18,7 @@ const Apunte = (props) => {
   const [fecha, setFecha] = useState("");
   const [etiquetas, setEtiquetas] = useState([]);
   const [likes, setLikes] = useState("");
-  const [setDislikes, setDislikes] = useState("");
+  const [dislikes, setDislikes] = useState("");
 
   return <div></div>;
 };

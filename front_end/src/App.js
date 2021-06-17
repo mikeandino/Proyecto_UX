@@ -1,9 +1,10 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Home from "./Views/Home";
 import NavBar from "./Components/NavBar";
 import Apunte from "./Components/Apunte";
+import Home from "./Views/Home";
+import Registrar from "./Views/Registrar";
 
 function App() {
   return (
@@ -11,6 +12,9 @@ function App() {
       <NavBar />
       <Route path="/" exact>
         <Home />
+      </Route>
+      <Route path="/registrar" exact>
+        <Registrar />
       </Route>
     </Router>
   );
