@@ -12,21 +12,6 @@ function App() {
       <Route path="/" exact>
         <Home />
       </Route>
-      <Route path="/registrar" exact>
-        <Registrar />
-      </Route>
-      <Route path="/examenes" exact>
-        <Examenes />
-      </Route>
-      <Route path="/clases" exact>
-        <Clases />
-      </Route>
-      <Route path="/preguntas" exact>
-        <Preguntas />
-      </Route>
-      <Route path="/examenes2" exact>
-        <Examenes2 />
-      </Route>
     </Router>
   );
 }
