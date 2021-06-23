@@ -1,50 +1,52 @@
-import { Button } from "reactstrap";
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import {
-  Collapse,
+  Button,
   Navbar,
-  NavbarToggler,
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
+  Collapse,
+  NavbarToggler,
 } from "reactstrap";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const NavBar = (props) => {
-  const [user, setUser] = useState("");
+  const [abierto, setAbierto] = React.useState(false);
+  const toggle = () => setAbierto(!abierto);
 
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
+  React.useEffect(() => {
+    props.setUser(props.user);
   }, []);
 
   return (
     <div>
-      {user ? (
-        <>
-          <Navbar color="dark" dark expand="md">
+      <Navbar color="dark" dark expand="md">
+        <NavbarBrand>Laboratorio Firebase</NavbarBrand>
+        <NavbarToggler onClick={toggle} className="mr-2" />
+        {props.user !== null ? (
+          <Collapse isOpen={abierto} navbar>
             <Nav className="mr-auto" navbar>
               <NavItem>
-                <Link to="/" className="nav-link">
-                  Home
+                <Link to="/dashboard" className="nav-link">
+                  Dashboard
                 </Link>
               </NavItem>
               <NavItem>
-                <Button
-                  onClick={() => {
-                    localStorage.removeItem("user");
-                    window.location.reload();
-                  }}
-                >
-                  <Link to="/" className="nav-link">
-                    Log Out
-                  </Link>
-                </Button>
+                <Link to="/amigos" className="nav-link">
+                  Amigos
+                </Link>
               </NavItem>
             </Nav>
-          </Navbar>
-        </>
-      ) : null}
+            <NavItem
+              onClick={() => {
+                props.setUser(null);
+              }}
+            >
+              <Link to="/">Log Out</Link>
+            </NavItem>
+          </Collapse>
+        ) : null}
+      </Navbar>
     </div>
   );
 };

@@ -1,70 +1,85 @@
-import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  FormText,
-} from "reactstrap";
-//import axios from "axios";
+import React from "react";
+import { Button } from "reactstrap";
+import { Link, useHistory } from "react-router-dom";
+import { useFirestore, useAuth } from "reactfire";
 
-const Registrar = () => {
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+function Registrar({ setUser }) {
+  const [emailSignup, setEmailSignup] = React.useState("");
+  const [passwordSignup, setPasswordSignup] = React.useState("");
+  const [message, setMessage] = React.useState("");
+  const auth = useAuth();
+  const collectionudata = useFirestore().collection("UserData");
+  const history = useHistory();
 
-  const onChangeHandler = (event) => {
-    switch (event.name) {
-      case "login":
-        {
-          setLogin(event.value);
-        }
-        break;
-      case "password":
-        {
-          setPassword(event.value);
-        }
-        break;
-    }
-  };
-  const Registrar = () => {
-    const newAlumno = { login, password };
-    const users = JSON.parse(localStorage.getItem("users"));
-    users.push(newAlumno);
-    localStorage.setItem("users", JSON.stringify(users));
-  };
+  function registrar() {
+    try {
+      auth
+        .createUserWithEmailAndPassword(emailSignup, passwordSignup)
+        .then((e) => {
+          console.log("coso");
+          const docData = {
+            amigos: [],
+            likes: [],
+            dislikes: [],
+            solicitudes: [],
+          };
+          collectionudata.doc(emailSignup).set(docData);
+          setEmailSignup("");
+          setPasswordSignup("");
+          setMessage("Cuenta creada exitosamente");
+          setUser(e.user);
+          history.push("/dashboard");
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/email-already-in-use": {
+              setMessage("El correo ya esta en uso.");
+              break;
+            }
+            case "auth/invalid-email": {
+              setMessage("El tipo de correo usado es invalido.");
+              break;
+            }
+          }
+        });
+    } catch (error) {}
+  }
 
   return (
-    <Container>
-      <Form>
-        <h1>Registrar</h1>
-        <FormGroup>
-          <Label for="exampleLogin">Login</Label>
-          <Input
-            type="text"
-            name="login"
-            id="login"
-            placeholder="Login"
-            value={login}
-            onChange={(e) => onChangeHandler(e.currentTarget)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="examplePassword">Password</Label>
-          <Input
-            type="password"
-            name="password"
-            id="Password"
-            placeholder="aaaaa"
-            value={password}
-            onChange={(e) => onChangeHandler(e.currentTarget)}
-          />
-        </FormGroup>
-        <Button onClick={() => Registrar()}>Registrar</Button>
-      </Form>
-    </Container>
+    <div>
+      <br />
+      Sign up:
+      <br />
+      <label>Email: </label>
+      <input
+        type="text"
+        value={emailSignup}
+        onChange={(e) => setEmailSignup(e.target.value)}
+      />
+      <br />
+      <label>Password: </label>
+      <input
+        type="password"
+        value={passwordSignup}
+        onChange={(e) => setPasswordSignup(e.target.value)}
+      />
+      <br />
+      <Button
+        onClick={() => {
+          registrar();
+        }}
+      >
+        Registrar
+      </Button>
+      {"    "}
+      {"    "}
+      {"  "}
+      <Button tag={Link} to="/">
+        Volver Atras
+      </Button>
+      {message ? <div>{message}</div> : null}
+    </div>
   );
-};
+}
 
 export default Registrar;
