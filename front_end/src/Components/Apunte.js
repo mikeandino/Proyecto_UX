@@ -10,40 +10,43 @@ import {
 } from "reactstrap";
 import React, { useState, useEffect } from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
-//import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Apunte = (props) => {
-  //const [alumno, setAlumno] = useState("");
+  console.log(props.id);
+  const did = props.id;
+  console.log(did);
+  const link = useLocation().pathname;
   const apuntedoc = useFirestore().collection("Posts").doc(props.id);
   const arrayvalue = useFirestore.FieldValue;
 
-  function Darlike(nlikes) {
+  function Darlike() {
     if (!props.likedpor.includes(props.email)) {
       //agregar a favoritos
       apuntedoc.update({
-        likes: Number(nlikes) + 1,
+        likes: Number(props.likes) + 1,
         likedpor: arrayvalue.arrayUnion(props.email),
       });
     } else {
       //quitar de favoritos
       apuntedoc.update({
-        likes: Number(nlikes) - 1,
+        likes: Number(props.likes) - 1,
         likedpor: arrayvalue.arrayRemove(props.email),
       });
     }
   }
 
-  function Dardislike(ndislikes) {
+  function Dardislike() {
     if (!props.dislikedpor.includes(props.email)) {
       //agregar a dislike
       apuntedoc.update({
-        dislikes: Number(ndislikes) + 1,
+        dislikes: Number(props.dislikes) + 1,
         dislikedpor: arrayvalue.arrayUnion(props.email),
       });
     } else {
       //quitar de dislkike
       apuntedoc.update({
-        dislikes: Number(ndislikes) - 1,
+        dislikes: Number(props.dislikes) - 1,
         dislikedpor: arrayvalue.arrayRemove(props.email),
       });
     }
@@ -65,16 +68,21 @@ const Apunte = (props) => {
           ))}
         </CardFooter>
         <CardFooter>
-          <ButtonToggle color="primary" onClick={() => Darlike(props.likes)}>
+          <ButtonToggle color="primary" onClick={() => Darlike()}>
             Likes: {"" + props.likes}
+          </ButtonToggle>{" "}
+          <ButtonToggle color="primary" onClick={() => Dardislike()}>
+            Dislike: {"" + props.dislikes}
           </ButtonToggle>{" "}
           <ButtonToggle
             color="primary"
-            onClick={() => Dardislike(props.dislikes)}
+            onClick={() => {
+              console.log(did);
+              navigator.clipboard.writeText(
+                "http://localhost:3000/memo/" + did
+              );
+            }}
           >
-            Dislike: {"" + props.dislikes}
-          </ButtonToggle>{" "}
-          <ButtonToggle color="primary" onClick={() => console.log("lol")}>
             Compartir
           </ButtonToggle>
         </CardFooter>

@@ -142,7 +142,7 @@ function Dashboard({ user }) {
                         texto={post.texto}
                         fecha={post.fecha}
                         etiquetas={post.etiquetas}
-                        likess={post.likes}
+                        likes={post.likes}
                         dislikes={post.dislikes}
                         likedpor={post.likedpor}
                         dislikedpor={post.dislikes}
@@ -159,14 +159,15 @@ function Dashboard({ user }) {
                     post.etiquetas.some((x) => x.includes(filtro)) ? (
                       <div key={post.NO_ID_FIELD}>
                         <Apunte
+                          id={post.NO_ID_FIELD}
                           titulo={post.titulo}
                           texto={post.texto}
                           fecha={post.fecha}
                           etiquetas={post.etiquetas}
-                          likess={post.likes}
+                          likes={post.likes}
                           dislikes={post.dislikes}
                           likedpor={post.likedpor}
-                          dislikedpor={post.dislikes}
+                          dislikedpor={post.dislikedpor}
                           email={user.email}
                         />
                       </div>
