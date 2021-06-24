@@ -13,17 +13,16 @@ import {
   Input,
   Card,
   CardTitle,
-  CardText,
   CardBody,
   ButtonGroup,
-  CardHeader,
-  CardFooter,
-  ButtonToggle,
 } from "reactstrap";
+import Apunte from "../Components/Apunte";
 
 function Dashboard({ user }) {
   const [titulo, setTitulo] = React.useState("");
   const [texto, setTexto] = React.useState("");
+  const [tag, setTag] = React.useState("");
+  const [tags, setTags] = React.useState([]);
   const [postsrender, setPostsrender] = React.useState(0);
   const collectionposts = useFirestore().collection("Posts");
   const arrayvalue = useFirestore.FieldValue;
@@ -33,69 +32,21 @@ function Dashboard({ user }) {
   const { data: datauData } = useFirestoreDocData(userDatos);
 
   function publicar() {
+    const hoy = new Date();
     if (titulo !== "" || texto !== "") {
       collectionposts.add({
-        autor: user.email,
         titulo: titulo,
         texto: texto,
+        fecha: hoy.toDateString(),
+        etiquetas: tags,
         likes: Number(0),
         dislikes: Number(0),
+        likedpor: [],
+        dislikedpor: [],
       });
       setTitulo("");
       setTexto("");
-    }
-  }
-
-  function borrar(pid) {
-    const likesRef = collectionposts.doc(pid);
-    likesRef.delete(pid);
-  }
-
-  function Darlike(pid, nlikes) {
-    if (!datauData.likes.includes(pid)) {
-      //agregar a favoritos
-      const likesRef = collectionposts.doc(pid);
-      const userdalike = arrayvalue.arrayUnion(user.email);
-      likesRef.update({
-        likes: Number(nlikes) + 1,
-        likedpor: userdalike,
-      });
-      userDatos.update({
-        likes: arrayvalue.arrayUnion(pid),
-      });
-    } else {
-      //quitar de favoritos
-      const likesRef = collectionposts.doc(pid);
-      const userquitalike = arrayvalue.arrayRemove(user.email);
-      likesRef.update({
-        likes: Number(nlikes) - 1,
-        likedpor: userquitalike,
-      });
-      userDatos.update({
-        likes: arrayvalue.arrayRemove(pid),
-      });
-    }
-  }
-
-  function Dardislike(pid, ndislikes) {
-    if (!datauData.dislikes.includes(pid)) {
-      //agregar a dislike
-      const likesRef = collectionposts.doc(pid);
-      likesRef.update({
-        dislikes: Number(ndislikes) + 1,
-      });
-      userDatos.update({
-        dislikes: arrayvalue.arrayUnion(pid),
-      });
-    } else {
-      //quitar de dislkike
-      const likesRef = collectionposts.doc(pid);
-      likesRef.update({
-        dislikes: Number(ndislikes) - 1,
-      });
-      userDatos.update({
-        dislikes: arrayvalue.arrayRemove(pid),
-      });
+      tags.splice(0, tags.length);
     }
   }
 
@@ -121,8 +72,43 @@ function Dashboard({ user }) {
                 onChange={(e) => setTexto(e.target.value)}
               />
               <br />
+              <Form inline>
+                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                  <Label for="examplePassword" className="mr-sm-2">
+                    Etiquetas:{" "}
+                  </Label>
+                  <Input
+                    type="text"
+                    name="tags"
+                    id="exampleTags"
+                    onChange={(e) => setTag(e.target.value)}
+                  />
+                </FormGroup>
+                <Button
+                  onClick={() => {
+                    tags.push(tag);
+                    setTag("");
+                    console.log(tags);
+                  }}
+                >
+                  {" "}
+                  Agregar{" "}
+                </Button>
+                <ul>
+                  {tags.map((element, index) => (
+                    <li key={index}>
+                      {element}
+                      <Button
+                        close
+                        onClick={() => tags.splice(tags.indexOf(element), 1)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </Form>
+              <br />
               <Button size="sm" onClick={() => publicar()}>
-                Publicar
+                Subir
               </Button>
             </CardBody>
           </Card>
@@ -152,26 +138,6 @@ function Dashboard({ user }) {
                   Mostrar solo post de amigos
                 </Label>
               </FormGroup>
-              <FormGroup check>
-                <Label check>
-                  <Input
-                    type="radio"
-                    name="radio1"
-                    onChange={() => setPostsrender(2)}
-                  />
-                  Mostrar solo favoritos
-                </Label>
-              </FormGroup>
-              <FormGroup check>
-                <Label check>
-                  <Input
-                    type="radio"
-                    name="radio1"
-                    onChange={() => setPostsrender(3)}
-                  />
-                  Mostrar solo toxicos
-                </Label>
-              </FormGroup>
             </FormGroup>
           </ButtonGroup>
         </div>
@@ -183,180 +149,43 @@ function Dashboard({ user }) {
                 <div>
                   {dataPosts.map((post) => (
                     <div key={post.NO_ID_FIELD}>
-                      <br />
-                      <Card>
-                        <CardHeader>Post por: {post.autor}</CardHeader>
-                        <CardBody>
-                          <CardTitle tag="h5">{post.titulo}</CardTitle>
-                          <CardText>{post.texto}</CardText>
-                        </CardBody>
-                        <CardFooter>
-                          <ButtonToggle
-                            color="primary"
-                            onClick={() =>
-                              Darlike(post.NO_ID_FIELD, post.likes)
-                            }
-                          >
-                            Likes: {"" + post.likes}
-                          </ButtonToggle>{" "}
-                          <ButtonToggle
-                            color="primary"
-                            onClick={() =>
-                              Dardislike(post.NO_ID_FIELD, post.dislikes)
-                            }
-                          >
-                            Dislike: {"" + post.dislikes}
-                          </ButtonToggle>{" "}
-                          {post.autor === user.email ? (
-                            <ButtonToggle
-                              color="danger"
-                              onClick={() => borrar(post.NO_ID_FIELD)}
-                            >
-                              Eliminar
-                            </ButtonToggle>
-                          ) : null}
-                        </CardFooter>
-                      </Card>
+                      <Apunte
+                        id={post.NO_ID_FIELD}
+                        titulo={post.titulo}
+                        texto={post.texto}
+                        fecha={post.fecha}
+                        etiquetas={post.etiquetas}
+                        likess={post.likes}
+                        dislikes={post.dislikes}
+                        likedpor={post.likedpor}
+                        dislikedpor={post.dislikes}
+                        email={user.email}
+                      />
                     </div>
                   ))}
                 </div>
               )
-            : postsrender === 1
-            ? //Post amigos
+            : //Post amigos
               statusPosts === "success" && (
                 <div>
-                  {dataPosts.map((post) =>
-                    datauData.amigos.includes(post.autor) ? (
-                      <div key={post.NO_ID_FIELD}>
-                        <Card>
-                          <CardHeader>Post por: {post.autor}</CardHeader>
-                          <CardBody>
-                            <CardTitle tag="h5">{post.titulo}</CardTitle>
-                            <CardText>{post.texto}</CardText>
-                          </CardBody>
-                          <CardFooter>
-                            <ButtonToggle
-                              color="primary"
-                              onClick={() =>
-                                Darlike(post.NO_ID_FIELD, post.likes)
-                              }
-                            >
-                              Likes: {"" + post.likes}
-                            </ButtonToggle>{" "}
-                            <ButtonToggle
-                              color="primary"
-                              onClick={() =>
-                                Dardislike(post.NO_ID_FIELD, post.dislikes)
-                              }
-                            >
-                              Dislikes: {"" + post.dislikes}
-                            </ButtonToggle>{" "}
-                            {post.autor === user.email ? (
-                              <ButtonToggle
-                                color="danger"
-                                onClick={() => borrar(post.NO_ID_FIELD)}
-                              >
-                                Eliminar
-                              </ButtonToggle>
-                            ) : null}
-                          </CardFooter>
-                        </Card>
-                      </div>
-                    ) : null
-                  )}
-                </div>
-              )
-            : postsrender === 2
-            ? //Post likes
-              statusPosts === "success" && (
-                <div>
-                  {dataPosts.map((post) =>
-                    datauData.likes.map((pf) =>
-                      post.NO_ID_FIELD === pf ? (
-                        <div key={post.NO_ID_FIELD}>
-                          <Card>
-                            <CardHeader>Post por: {post.autor}</CardHeader>
-                            <CardBody>
-                              <CardTitle tag="h5">{post.titulo}</CardTitle>
-                              <CardText>{post.texto}</CardText>
-                            </CardBody>
-                            <CardFooter>
-                              <ButtonToggle
-                                color="primary"
-                                onClick={() =>
-                                  Darlike(post.NO_ID_FIELD, post.likes)
-                                }
-                              >
-                                Likes: {"" + post.likes}
-                              </ButtonToggle>{" "}
-                              <ButtonToggle
-                                color="primary"
-                                onClick={() =>
-                                  Dardislike(post.NO_ID_FIELD, post.dislikes)
-                                }
-                              >
-                                Dislikes: {"" + post.dislikes}
-                              </ButtonToggle>{" "}
-                              {post.autor === user.email ? (
-                                <ButtonToggle
-                                  color="danger"
-                                  onClick={() => borrar(post.NO_ID_FIELD)}
-                                >
-                                  Eliminar
-                                </ButtonToggle>
-                              ) : null}
-                            </CardFooter>
-                          </Card>
-                        </div>
-                      ) : null
-                    )
-                  )}
-                </div>
-              )
-            : //Post dislikes
-              statusPosts === "success" && (
-                <div>
-                  {dataPosts.map((post) =>
-                    datauData.dislikes.map((pd) =>
-                      post.NO_ID_FIELD === pd ? (
-                        <div key={post.NO_ID_FIELD}>
-                          <Card>
-                            <CardHeader>Post por: {post.autor}</CardHeader>
-                            <CardBody>
-                              <CardTitle tag="h5">{post.titulo}</CardTitle>
-                              <CardText>{post.texto}</CardText>
-                            </CardBody>
-                            <CardFooter>
-                              <ButtonToggle
-                                color="primary"
-                                onClick={() =>
-                                  Darlike(post.NO_ID_FIELD, post.likes)
-                                }
-                              >
-                                Likes: {"" + post.likes}
-                              </ButtonToggle>{" "}
-                              <ButtonToggle
-                                color="primary"
-                                onClick={() =>
-                                  Dardislike(post.NO_ID_FIELD, post.dislikes)
-                                }
-                              >
-                                Dislikes: {"" + post.dislikes}
-                              </ButtonToggle>{" "}
-                              {post.autor === user.email ? (
-                                <ButtonToggle
-                                  color="danger"
-                                  onClick={() => borrar(post.NO_ID_FIELD)}
-                                >
-                                  Eliminar
-                                </ButtonToggle>
-                              ) : null}
-                            </CardFooter>
-                          </Card>
-                        </div>
-                      ) : null
-                    )
-                  )}
+                  {dataPosts.map((post) => (
+                    //{post.etiquetas.some(x => x.includes(y))
+                    // ?
+                    <div key={post.NO_ID_FIELD}>
+                      <Apunte
+                        titulo={post.titulo}
+                        texto={post.texto}
+                        fecha={post.fecha}
+                        etiquetas={post.etiquetas}
+                        likess={post.likes}
+                        dislikes={post.dislikes}
+                        likedpor={post.likedpor}
+                        dislikedpor={post.dislikes}
+                        email={user.email}
+                      />
+                    </div>
+                    //: null}
+                  ))}
                 </div>
               )}
         </div>

@@ -10,12 +10,14 @@ import {
 } from "reactstrap";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "reactfire";
+import { GoogleButton } from "react-google-button";
 
 function Login({ setUser }) {
   const [emailSignin, setEmailSignin] = React.useState("");
   const [passwordSignin, setPasswordSignin] = React.useState("");
   const [message, setMessage] = React.useState("");
   const auth = useAuth();
+  const auth2 = useAuth;
   const history = useHistory();
 
   function ingresar() {
@@ -98,6 +100,11 @@ function Login({ setUser }) {
         <Button tag={Link} to="/registrar">
           Registrar
         </Button>
+        <GoogleButton
+          onClick={() => {
+            auth.signInWithPopup(auth2.GoogleAuthProvider);
+          }}
+        />
       </Form>
     </Container>
   );

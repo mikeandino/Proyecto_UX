@@ -25,18 +25,7 @@ const NavBar = (props) => {
         <NavbarToggler onClick={toggle} className="mr-2" />
         {props.user !== null ? (
           <Collapse isOpen={abierto} navbar>
-            <Nav className="mr-auto" navbar>
-              <NavItem>
-                <Link to="/dashboard" className="nav-link">
-                  Dashboard
-                </Link>
-              </NavItem>
-              <NavItem>
-                <Link to="/amigos" className="nav-link">
-                  Amigos
-                </Link>
-              </NavItem>
-            </Nav>
+            <Nav className="mr-auto" navbar></Nav>
             <NavItem
               onClick={() => {
                 props.setUser(null);

@@ -16,14 +16,6 @@ function Registrar({ setUser }) {
       auth
         .createUserWithEmailAndPassword(emailSignup, passwordSignup)
         .then((e) => {
-          console.log("coso");
-          const docData = {
-            amigos: [],
-            likes: [],
-            dislikes: [],
-            solicitudes: [],
-          };
-          collectionudata.doc(emailSignup).set(docData);
           setEmailSignup("");
           setPasswordSignup("");
           setMessage("Cuenta creada exitosamente");
