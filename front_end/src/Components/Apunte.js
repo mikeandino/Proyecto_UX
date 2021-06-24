@@ -1,3 +1,4 @@
+import React from "react";
 import {
   ButtonToggle,
   Card,
@@ -7,17 +8,15 @@ import {
   CardTitle,
   CardText,
   Badge,
+  Popover,
+  PopoverBody,
 } from "reactstrap";
-import React from "react";
-import { useFirestore, useFirestoreDocData } from "reactfire";
+import { useFirestore } from "reactfire";
 
 const Apunte = (props) => {
-  console.log(props.id);
-  const did = props.id;
-  console.log(did);
   const apuntedoc = useFirestore().collection("Posts").doc(props.id);
   const arrayvalue = useFirestore.FieldValue;
-
+  const [poptimer, setPoptimer] = React.useState(false);
   function Darlike() {
     if (!props.likedpor.includes(props.email)) {
       //agregar a favoritos
@@ -68,29 +67,37 @@ const Apunte = (props) => {
         <CardFooter>
           <ButtonToggle
             color="primary"
-            active={props.email}
+            disabled={props.email === null}
             onClick={() => Darlike()}
           >
             Likes: {"" + props.likes}
           </ButtonToggle>{" "}
           <ButtonToggle
             color="primary"
-            active={props.email}
+            disabled={props.email === null}
             onClick={() => Dardislike()}
           >
             Dislike: {"" + props.dislikes}
           </ButtonToggle>{" "}
           <ButtonToggle
+            id="compartir"
             color="primary"
             onClick={() => {
-              console.log(did);
               navigator.clipboard.writeText(
-                "http://localhost:3000/memo/" + did
+                "http://localhost:3000/memo/" + props.id
               );
             }}
           >
             Compartir
           </ButtonToggle>
+          <Popover
+            placement="top"
+            isOpen={poptimer}
+            target="compartir"
+            toggle={() => setPoptimer(!poptimer)}
+          >
+            <PopoverBody>Copiado al portapapeles!</PopoverBody>
+          </Popover>
         </CardFooter>
       </Card>
     </div>

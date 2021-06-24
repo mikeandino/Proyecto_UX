@@ -17,11 +17,9 @@ function Dashboard({ user }) {
   const [titulo, setTitulo] = React.useState("");
   const [texto, setTexto] = React.useState("");
   const [tag, setTag] = React.useState("");
-  const [tags, setTags] = React.useState([]);
+  const [tags] = React.useState([]);
   const [filtro, setFiltro] = React.useState([]);
   const collectionposts = useFirestore().collection("Posts");
-  const arrayvalue = useFirestore.FieldValue;
-  const userDatos = useFirestore().collection("UserData").doc(user.email);
   const { status: statusPosts, data: dataPosts } =
     useFirestoreCollectionData(collectionposts);
 

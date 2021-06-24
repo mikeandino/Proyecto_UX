@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import { Container, Form } from "reactstrap";
 import Apunte from "../Components/Apunte";
 import { useFirestore, useFirestoreDocData } from "reactfire";

@@ -1,14 +1,13 @@
 import React from "react";
 import { Button } from "reactstrap";
 import { Link, useHistory } from "react-router-dom";
-import { useFirestore, useAuth } from "reactfire";
+import { useAuth } from "reactfire";
 
 function Registrar({ setUser }) {
   const [emailSignup, setEmailSignup] = React.useState("");
   const [passwordSignup, setPasswordSignup] = React.useState("");
   const [message, setMessage] = React.useState("");
   const auth = useAuth();
-  const collectionudata = useFirestore().collection("UserData");
   const history = useHistory();
 
   function registrar() {
