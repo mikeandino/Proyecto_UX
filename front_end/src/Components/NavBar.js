@@ -34,7 +34,14 @@ const NavBar = (props) => {
               <Link to="/">Log Out</Link>
             </NavItem>
           </Collapse>
-        ) : null}
+        ) : (
+          <Collapse isOpen={abierto} navbar>
+            <Nav className="mr-auto" navbar></Nav>
+            <NavItem>
+              <Link to="/">Log In</Link>
+            </NavItem>
+          </Collapse>
+        )}
       </Navbar>
     </div>
   );

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "./Views/Login";
 import Registrar from "./Views/Registrar";
 import Dashboard from "./Views/Dashboard";
-import Amigos from "./Views/Amigos";
+import Memo from "./Views/Memo";
 import NavBar from "./Components/NavBar";
 import "./App.css";
 
@@ -23,8 +23,8 @@ function App() {
         <Route path="/dashboard" exact>
           <Dashboard user={user} />
         </Route>
-        <Route path="/amigos" exact>
-          <Amigos user={user} />
+        <Route path="/memo/:memoid" exact>
+          <Memo user={user} />
         </Route>
       </Router>
     </div>

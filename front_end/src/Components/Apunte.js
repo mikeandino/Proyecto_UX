@@ -8,15 +8,13 @@ import {
   CardText,
   Badge,
 } from "reactstrap";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
-import { useLocation } from "react-router-dom";
 
 const Apunte = (props) => {
   console.log(props.id);
   const did = props.id;
   console.log(did);
-  const link = useLocation().pathname;
   const apuntedoc = useFirestore().collection("Posts").doc(props.id);
   const arrayvalue = useFirestore.FieldValue;
 
@@ -68,10 +66,18 @@ const Apunte = (props) => {
           ))}
         </CardFooter>
         <CardFooter>
-          <ButtonToggle color="primary" onClick={() => Darlike()}>
+          <ButtonToggle
+            color="primary"
+            active={props.email}
+            onClick={() => Darlike()}
+          >
             Likes: {"" + props.likes}
           </ButtonToggle>{" "}
-          <ButtonToggle color="primary" onClick={() => Dardislike()}>
+          <ButtonToggle
+            color="primary"
+            active={props.email}
+            onClick={() => Dardislike()}
+          >
             Dislike: {"" + props.dislikes}
           </ButtonToggle>{" "}
           <ButtonToggle

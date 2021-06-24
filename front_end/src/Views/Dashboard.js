@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  useFirestore,
-  useFirestoreCollectionData,
-  useFirestoreDocData,
-} from "reactfire";
+import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import {
   Container,
   Button,
@@ -14,7 +10,6 @@ import {
   Card,
   CardTitle,
   CardBody,
-  ButtonGroup,
 } from "reactstrap";
 import Apunte from "../Components/Apunte";
 
