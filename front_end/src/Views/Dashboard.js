@@ -23,13 +23,12 @@ function Dashboard({ user }) {
   const [texto, setTexto] = React.useState("");
   const [tag, setTag] = React.useState("");
   const [tags, setTags] = React.useState([]);
-  const [postsrender, setPostsrender] = React.useState(0);
+  const [filtro, setFiltro] = React.useState([]);
   const collectionposts = useFirestore().collection("Posts");
   const arrayvalue = useFirestore.FieldValue;
   const userDatos = useFirestore().collection("UserData").doc(user.email);
   const { status: statusPosts, data: dataPosts } =
     useFirestoreCollectionData(collectionposts);
-  const { data: datauData } = useFirestoreDocData(userDatos);
 
   function publicar() {
     const hoy = new Date();
@@ -97,7 +96,7 @@ function Dashboard({ user }) {
                 <ul>
                   {tags.map((element, index) => (
                     <li key={index}>
-                      {element}
+                      {element + "        "}
                       <Button
                         close
                         onClick={() => tags.splice(tags.indexOf(element), 1)}
@@ -115,36 +114,24 @@ function Dashboard({ user }) {
         </div>
 
         <div>
-          <ButtonGroup vertical>
-            <FormGroup tag="fieldset">
-              <FormGroup check>
-                <Label check>
-                  <Input
-                    type="radio"
-                    name="radio1"
-                    onChange={() => setPostsrender(0)}
-                    defaultChecked
-                  />
-                  Mostrar todos
-                </Label>
-              </FormGroup>
-              <FormGroup check>
-                <Label check>
-                  <Input
-                    type="radio"
-                    name="radio1"
-                    onChange={() => setPostsrender(1)}
-                  />
-                  Mostrar solo post de amigos
-                </Label>
-              </FormGroup>
+          <Form inline>
+            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+              <Label for="examplePassword" className="mr-sm-2">
+                Filtrar por etiquetas:{" "}
+              </Label>
+              <Input
+                type="text"
+                name="filter"
+                id="exampleFilter"
+                onChange={(e) => setFiltro(e.target.value)}
+              />
             </FormGroup>
-          </ButtonGroup>
+          </Form>
         </div>
 
         <div>
-          {postsrender === 0
-            ? //Todos los post
+          {filtro === ""
+            ? //Todos los apuntes
               statusPosts === "success" && (
                 <div>
                   {dataPosts.map((post) => (
@@ -165,27 +152,26 @@ function Dashboard({ user }) {
                   ))}
                 </div>
               )
-            : //Post amigos
+            : //Apuntes filtrados
               statusPosts === "success" && (
                 <div>
-                  {dataPosts.map((post) => (
-                    //{post.etiquetas.some(x => x.includes(y))
-                    // ?
-                    <div key={post.NO_ID_FIELD}>
-                      <Apunte
-                        titulo={post.titulo}
-                        texto={post.texto}
-                        fecha={post.fecha}
-                        etiquetas={post.etiquetas}
-                        likess={post.likes}
-                        dislikes={post.dislikes}
-                        likedpor={post.likedpor}
-                        dislikedpor={post.dislikes}
-                        email={user.email}
-                      />
-                    </div>
-                    //: null}
-                  ))}
+                  {dataPosts.map((post) =>
+                    post.etiquetas.some((x) => x.includes(filtro)) ? (
+                      <div key={post.NO_ID_FIELD}>
+                        <Apunte
+                          titulo={post.titulo}
+                          texto={post.texto}
+                          fecha={post.fecha}
+                          etiquetas={post.etiquetas}
+                          likess={post.likes}
+                          dislikes={post.dislikes}
+                          likedpor={post.likedpor}
+                          dislikedpor={post.dislikes}
+                          email={user.email}
+                        />
+                      </div>
+                    ) : null
+                  )}
                 </div>
               )}
         </div>
