@@ -84,7 +84,7 @@ const Apunte = (props) => {
             color="primary"
             onClick={() => {
               navigator.clipboard.writeText(
-                "http://localhost:3000/memo/" + props.id
+                "https://proyecto-ux-d0012.web.app/memo/" + props.id
               );
             }}
           >
