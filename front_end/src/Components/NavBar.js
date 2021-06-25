@@ -20,7 +20,7 @@ const NavBar = (props) => {
   return (
     <div>
       <Navbar color="dark" dark expand="md">
-        <NavbarBrand>Laboratorio Firebase</NavbarBrand>
+        <NavbarBrand>Proyecto UX</NavbarBrand>
         <NavbarToggler onClick={toggle} className="mr-2" />
         {props.user !== null ? (
           <Collapse isOpen={abierto} navbar>
